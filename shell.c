@@ -18,33 +18,21 @@
 
 struct passwd *pw;
 
-int main(void)
+int process_command(char *command, struct elist *list) 
 {
-    init_ui();
-
-    char *command;
-    struct elist *list = elist_create(0, sizeof(char **));
-
-    signal(SIGINT, SIG_IGN);
-    hist_init(100);
-
-    while (true) {
-
-        // reading the command from the user
-        command = read_command();
-
-        // if there is no command from the user
-        if (command == NULL) {
-            break;
-        }
-       
-        if (strlen(command) > 0) {
-            hist_add(command);
-        }
+        //int status;
+//        char copy_command[strlen(command) + 1];
+//        strcpy(copy_command, command);
+        
+//        LOG("HERE IS %c\n", copy_command[0]);
+//        if (strlen(command) > 0 && copy_command[0] != '!') {
+//            hist_add(command);
+//        }
 
         LOG("Input command: %s\n", command);
         LOG("list size: %zu\n", elist_size(list));
 
+        elist_clear(list);
         char *next_tok = command;
         char *curr_tok;
 
@@ -58,11 +46,6 @@ int main(void)
             
             elist_add(list, &curr_tok);
         }
-
-//        char x[strlen(command) + 1];
-//        strcpy(x, command);
-
-//        int *y = x[1];
 
 
         LOG("Input command after: %s\n", command);
@@ -90,6 +73,8 @@ int main(void)
             input_dir = elist_get(list, 1); 
         }
 
+
+        LOG("BUILTINCMD: %s\n", *built_in_cmd);
         if (elist_size(list) != 1) {
             if (strcmp(built_in_cmd[0], "cd") == 0) {
                 // if the user only type "cd" and didn't specify any specific directory             
@@ -104,6 +89,7 @@ int main(void)
                         perror("directory didn't exist");
                     }
                 }
+    
             } else if (strcmp(*built_in_cmd, "history") == 0) {
                 hist_print();
                 fflush(stdout);
@@ -113,16 +99,25 @@ int main(void)
                 LOG("the number is: %s\n", start_ptr);
                 //long val;
                 //val = strtol(start_ptr, end_ptr, 10);
+                int val = atoi(start_ptr);
+
                 //if (end_ptr == start_ptr) {
                 //    break;
                 //}
-                //LOG("returnnum: %ld\n", val);
-                //hist_search_cnum(val);
-                //continue;
+
+                const char *hist_val = hist_search_cnum(val);
+                char *copy_hist_val = strdup(hist_val);
+                LOG("HISTORY VAL: %s\n", copy_hist_val);
+                if (hist_val != NULL) {
+                    process_command(copy_hist_val, list);
+                    return 0;
+                }
+                
 //          } else if (strcmp(*built_in_cmd, "jobs") == 0) {
 //              continue;
-            } else if (strcmp(*built_in_cmd, "exit") == 0) {
-                break;
+            } 
+            else if (strcmp(*built_in_cmd, "exit") == 0) {
+                exit(0);
             } 
         }
 
@@ -140,6 +135,7 @@ int main(void)
         if (elist_size(list) != 1) {
             for (i = 0; i < elist_size(list) - 1; i++) {
                 LOG("counter: %i\n", i);
+                LOG("BUILTINCMDCHAR: %s\n", built_in_cmd[i]);
 
                 if (strcmp(built_in_cmd[i], ">") == 0) {
                     LOG("filename: %s\n", built_in_cmd[i + 1]);
@@ -200,7 +196,67 @@ int main(void)
         /* We are done with command; free it */
         //elist_destroy(list);
         free(command);
-    }
+        return 0;
+}
+
+
+int main(void)
+{
+    init_ui();
+    //jobs_init();
+    hist_init(100);
+
+    struct elist *args = elist_create(0, sizeof(char **));
+
+    signal(SIGINT, SIG_IGN);
+    //signal(SIGCHLD, jobs_sigchld);
+
+    while (true) {
+        char *command = read_command();
+        if (command == NULL) {
+            break;
+        }
+
+        char copy_command[strlen(command) + 1];
+        strcpy(copy_command, command);
+        if (strlen(command) > 0 && copy_command[0] != '!') {
+            hist_add(command);
+        }
+
+        // check if the length is not only ! too
+//        char *start_ptr;
+        //LOG("START PTR: %s\n", start_ptr);
+//        if (copy_command[0] == '!' && strlen(copy_command) > 0) {
+//            start_ptr = &copy_command[0] + 1;
+//            LOG("START PTR: %s\n", start_ptr);
+//            int val = atoi(start_ptr);
+            
+//            const char *hist_val = hist_search_cnum(val);
+//            char *copy_hist_val = strdup(hist_val);
+//            char *test = malloc(strlen(copy_hist_val + 1));
+            
+//            memcpy(test, copy_hist_val, strlen(copy_hist_val + 1));
+//            command = test;
+//            free(copy_hist_val);
+//        }
+
+        process_command(command, args);
+}
+
+    //destroy_ui();
+    //jobs_destroy();
+    hist_destroy();
+    elist_destroy(args);
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
