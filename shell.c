@@ -46,7 +46,7 @@ void jobs_sigchld (int sig_num)
     pid_t child_pid;
     child_pid = waitpid(-1, &status, WNOHANG);
     
-    //struct jobs_list *j = malloc(sizeof(struct jobs_list));
+//  struct jobs_list *j = malloc(sizeof(struct jobs_list));
     int job_index = 0;
 
 //    void *temp;
@@ -177,6 +177,7 @@ int process_command(char *command, struct elist *list)
                     status = process_command(copy_hist_val, list);
                     set_status(status);
                 }
+                free(command);
                 return 0;
 
             // handling getting the history based on index and prefix    
@@ -208,6 +209,7 @@ int process_command(char *command, struct elist *list)
                     status = process_command(copy_hist_val, list);
                     set_status(status);
                 }
+                free(command);
                 return 0;
             
             // handling jobs command (listing all the background jobs that are currently running)
@@ -225,6 +227,7 @@ int process_command(char *command, struct elist *list)
 
             // handling exit command
             else if (strcmp(*built_in_cmd, "exit") == 0) {
+                free(command);
                 exit(0);
             } 
 

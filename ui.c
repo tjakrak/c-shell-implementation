@@ -167,12 +167,15 @@ unsigned int prompt_cmd_num(void)
 
 char *read_command(void)
 {
+    // if it is not scripting mode
     if (scripting == false) {
         cmd_number++;
         char *prompt = prompt_line();
         char *command = readline(prompt);
         free(prompt);
         return command;
+
+    // if this is scripting mode
     } else {
         char *line = NULL;
         size_t line_sz = 0;
