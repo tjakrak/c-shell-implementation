@@ -73,6 +73,6 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 
 <b>Syntax used to test:</b>
 
-```make test``` - To test the whole tests
-```make test run=x``` - To test specific case of x, where x is the test number
-```make test run={x, y, ..., z}``` - To test few specific cases where {x, y, ...., z} is the test number
+- ```make test``` - To test the whole tests
+- ```make test run=x``` - To test specific case of x, where x is the test number
+- ```make test run={x, y, ..., z}``` - To test few specific cases where {x, y, ...., z} is the test number
