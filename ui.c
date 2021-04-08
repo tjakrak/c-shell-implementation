@@ -1,3 +1,9 @@
+/**
+* @file
+* This ui.c file is implementing the user interface for mini shell
+* It is showing the directory, username, bad/good status, command number and the host name
+*/
+
 #include <stdio.h>
 #include <readline/readline.h>
 #include <locale.h>
@@ -6,28 +12,30 @@
 #include <limits.h>
 #include <pwd.h>
 
-//#include "next_token.c"
 #include "history.h"
 #include "logger.h"
 #include "ui.h"
 
+// prompt status
 static const char *good_str = "😌";
 static const char *bad_str  = "🤯";
 
 static int readline_init(void);
 static bool scripting = false;
 
+// status number indicating it is a valid command or not
 int status_num;
 
-static char cwd[PATH_MAX];
+// a variable to get the current working directory
+static char curr_dir[PATH_MAX];
 static char hostnm[HOST_NAME_MAX];
 
-//static char *hostnm;
-//static char *cwd;
+int cmd_number = 0;
+unsigned int down_up_index = 1;
+int current_down_up_index;
 
-int cmd_num = 0;
-
-
+bool switch_up = false;
+bool switch_down = false;
 
 //struct passwd *pw;
 
@@ -59,7 +67,7 @@ char *prompt_line(void)
     const char *status = prompt_status() ? bad_str : good_str;
 
     char cmd_num[25];
-    snprintf(cmd_num, 25, "%d", prompt_cmd_num());
+    snprintf(cmd_num, 25, "%u", prompt_cmd_num());
 
     char *user = prompt_username();
     char *host = prompt_hostname();
@@ -85,8 +93,6 @@ char *prompt_line(void)
             host,
             cwd);
 
-//    free(hostnm);
-//    free(cwd);
     return prompt_str;
 }
 
@@ -112,7 +118,7 @@ char *prompt_hostname(void)
 char *prompt_cwd(void)
 {
     // getting the current directory
-    getcwd(cwd, PATH_MAX);
+    getcwd(curr_dir, PATH_MAX);
 
     // get the home directory
     char *home_directory = getenv("HOME");
@@ -124,7 +130,7 @@ char *prompt_cwd(void)
     // if there is, replace it with ~
     int i;
     for (i = 0; i < strlen(home_directory); i++) {
-        if (home_directory[i] == cwd[i]) {
+        if (home_directory[i] == curr_dir[i]) {
             //LOG("home: %c\n", home_directory[i]);
             //LOG("cwdhome: %c\n", cwd[i]);
             continue;
@@ -135,12 +141,12 @@ char *prompt_cwd(void)
 
     // if home directory exist then start printing from ~
     if(home) {
-        cwd[i - 1] = '~';
-        char *p = &cwd[i - 1];
-        strcpy(cwd, p);
+        curr_dir[i - 1] = '~';
+        char *p = &curr_dir[i - 1];
+        strcpy(curr_dir, p);
     }
 
-    return cwd;
+    return curr_dir;
 }
 
 int set_status(int status) {
@@ -156,16 +162,15 @@ int prompt_status(void)
 
 unsigned int prompt_cmd_num(void)
 {
-    return cmd_num;
+    return cmd_number;
 }
 
 char *read_command(void)
 {
     if (scripting == false) {
-        cmd_num++;
+        cmd_number++;
         char *prompt = prompt_line();
         char *command = readline(prompt);
-        //free(cwd);
         free(prompt);
         return command;
     } else {
@@ -194,39 +199,57 @@ int readline_init(void)
 
 int key_up(int count, int key)
 {
+    char *prev_command;
+    
+    if (switch_down) {
+        current_down_up_index = hist_last_cnum() - down_up_index;
+    } else {
+        current_down_up_index = hist_last_cnum() + 1 - down_up_index;
+    }
+    prev_command = (char *)hist_search_cnum(current_down_up_index);
+
     /* Modify the command entry text: */
-    rl_replace_line("User pressed 'up' key", 1);
+    rl_replace_line(prev_command, 1);
+    down_up_index++;
 
     /* Move the cursor to the end of the line: */
     rl_point = rl_end;
 
+    switch_up = true;
+    switch_down = false;
+
     // TODO: step back through the history until no more history entries are
     // left. Once the end of the history is reached, stop updating the command
     // line.
-    
-//    start = rl_point;
-
-//    "\e[A"
-//    previous-history (C-p)
-//    for (int i = start; i >= start - 100; i--) {
-//        rl_line_buffer[i];
-//    }
-
-//    int i;
-//    for (i = cmd_num; i >= cmd_num - 100; i--) {
-//        hist_search_cnum(i);
-//    }
 
     return 0;
 }
 
 int key_down(int count, int key)
 {
-    /* Modify the command entry text: */
-    rl_replace_line("User pressed 'down' key", 1);
+    char *next_command;
+    
+    if (switch_up) {
+        down_up_index = down_up_index - 2;
+    } else {
+        down_up_index = down_up_index - 1;
+    }
+    
+    if (down_up_index < hist_last_cnum() - 1) {
+        current_down_up_index = hist_last_cnum() + 1 - down_up_index;
+        next_command = (char *)hist_search_cnum(current_down_up_index);
+    }
+
+    if (next_command[0] != '\0') {
+        /* Modify the command entry text: */
+        rl_replace_line(next_command, 1);
+    }
 
     /* Move the cursor to the end of the line: */
     rl_point = rl_end;
+
+    switch_down = true;
+    switch_up = false;
 
     // TODO: step forward through the history (assuming we have stepped back
     // previously). Going past the most recent history command blanks out the

@@ -1,3 +1,9 @@
+/**
+* @file
+* This file main function is to store commands from the user
+* We are storing the commands in a circular array that we implemented in clist.c file
+*/
+
 #include <stddef.h> 
 #include <stdio.h>
 #include <string.h>
@@ -35,15 +41,16 @@ void hist_add(const char *cmd)
 void hist_print(void)
 {
     void *elem;
+    iter.idx = 0;
     while ((elem = clist_iterate_rev(list, &iter)) != NULL) {
-        char *ie = (char *) elem;
+        char *cmd = (char *) elem;
         unsigned int index;
         if (list->insertions < 100) {
             index = iter.idx;
         } else {
             index = list->insertions - 100 + iter.idx;
         }
-        printf("%u %s\n", index, ie);
+        printf("%u %s\n", index, cmd);
     }
 }
 
@@ -51,7 +58,16 @@ const char *hist_search_prefix(char *prefix)
 {
     // TODO: Retrieves the most recent command starting with 'prefix', or NULL
     // if no match found.
-
+    
+    void *elem;
+    iter.idx = 0;
+    while ((elem = clist_iterate(list, &iter)) != NULL) {
+        char *cmd = (char *) elem;
+        size_t pfx_length = strlen(prefix);
+        if (strncmp(cmd, prefix, pfx_length) == 0) {
+            return cmd;
+        }
+    }
     return NULL;
 }
 
@@ -59,13 +75,18 @@ const char *hist_search_cnum(int command_number)
 {
     // TODO: Retrieves a particular command number. Return NULL if no match
     // found.
-    return clist_get(list, command_number);
+    
+    const char *hist_val = clist_get(list, command_number - 1);
+    if (hist_val == NULL) {
+        return NULL;
+    }
+    return hist_val;
 
 }
 
 unsigned int hist_last_cnum(void)
 {
     // TODO: Retrieve the most recent command number.
-    return list->insertions - 1;
-    //return clist_insertions(list) - 1;
+    return list->insertions;
+    
 }

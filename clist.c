@@ -1,3 +1,7 @@
+/**
+* @file
+*/
+
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,12 +9,12 @@
 
 #include "clist.h"
 
-struct clist {
-    size_t insertions;
-    size_t capacity;
-    size_t item_sz;
-    void *element_storage;
-};
+//struct clist {
+//    size_t insertions;
+//    size_t capacity;
+//    size_t item_sz;
+//    void *element_storage;
+//};
 
 //struct clist_iterator {
 //    unsigned int initialized : 1;
@@ -26,7 +30,7 @@ struct clist *clist_create(size_t capacity, size_t item_sz)
     }
 
     if (capacity == 0) {
-        return NULL;
+        capacity = 100;
     }
 
     list->item_sz = item_sz;
@@ -58,7 +62,7 @@ struct clist_iterator clist_create_iter(void)
 
 ssize_t clist_add(struct clist *list, void *item) {
     size_t idx = list->insertions % list->capacity;
-    void *ptr = list->element_storage + idx * list->item_sz;
+    void *ptr = (char *)list->element_storage + idx * list->item_sz;
     memcpy(ptr, item, list->item_sz);
     return list->insertions++;
 }
@@ -67,19 +71,11 @@ void *clist_add_new(struct clist *list)
 {
     list->insertions++;
     int idx = list->insertions % list->capacity;
-    void *ptr = list->element_storage + idx * list->item_sz;
+    void *ptr = (char *)list->element_storage + idx * list->item_sz;
     return ptr;
 }
 
 void *clist_get(struct clist *list, size_t idx) {
-
-//    if (list == NULL || idx > list->capacity) {
-//        return NULL;
-//    }
-    
-    // the first element would be start from insertion + item_sz
-//    int real_idx = (list->insertions + idx) % list->capacity;
-
 
     if (list == NULL || idx >= list->insertions || ((list->insertions > list->capacity) && (idx < list->insertions - list->capacity)))
     {
@@ -88,8 +84,7 @@ void *clist_get(struct clist *list, size_t idx) {
     // mod idx
     size_t real_idx = idx % list->capacity;
 
-
-    return list->element_storage + real_idx * list->item_sz;
+    return (char *)list->element_storage + real_idx * list->item_sz;
 
 }
 

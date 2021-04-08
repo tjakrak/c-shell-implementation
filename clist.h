@@ -1,3 +1,7 @@
+/**
+* @file
+*/
+
 #ifndef _CLIST_H_
 #define _CLIST_H_
 

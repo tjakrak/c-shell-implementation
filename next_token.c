@@ -1,4 +1,5 @@
 /**
+ * @file
  * Demonstrates string tokenization in C using the strspn(3) and strcspn(3)
  * functions. Unlike strtok(3), this implementation is thread safe. The code
  * is based on the following newsgroup post:
