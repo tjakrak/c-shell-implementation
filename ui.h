@@ -14,6 +14,8 @@
  */
 void init_ui(void);
 
+void destroy_ui(void);
+
 /**
  * Retrieves the current prompt string.
  *

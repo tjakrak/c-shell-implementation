@@ -175,9 +175,10 @@ int process_command(char *command, struct elist *list)
                 if (hist_val != NULL) {
                     char *copy_hist_val = strdup(hist_val);
                     status = process_command(copy_hist_val, list);
+                    free(copy_hist_val);
                     set_status(status);
                 }
-                free(command);
+                //free(command);
                 return 0;
 
             // handling getting the history based on index and prefix    
@@ -207,9 +208,10 @@ int process_command(char *command, struct elist *list)
                     char *copy_hist_val = strdup(hist_val);
                     // send the command to process_command() function to be tokenized and run
                     status = process_command(copy_hist_val, list);
+                    free(copy_hist_val);
                     set_status(status);
                 }
-                free(command);
+                //free(command);
                 return 0;
             
             // handling jobs command (listing all the background jobs that are currently running)
@@ -227,7 +229,7 @@ int process_command(char *command, struct elist *list)
 
             // handling exit command
             else if (strcmp(*built_in_cmd, "exit") == 0) {
-                free(command);
+                //free(command);
                 exit(0);
             } 
 
@@ -343,7 +345,7 @@ int process_command(char *command, struct elist *list)
 
         /* We are done with command; free it */
         set_status(status);
-        free(command);
+        //free(command);
         return 0;
 }
 
@@ -370,7 +372,7 @@ int main(void)
         process_command(command, args);
     }
 
-    //destroy_ui();
+    destroy_ui();
     hist_destroy();
     elist_destroy(args);
     elist_destroy(ls_job);
