@@ -38,6 +38,9 @@ bool switch_up = false;
 bool switch_down = false;
 
 //struct passwd *pw;
+//
+char *line = NULL;
+size_t line_sz = 0;
 
 void init_ui(void)
 {
@@ -60,6 +63,7 @@ void destroy_ui(void)
 {
     // TODO cleanup code, if necessary
 
+    free(line);
 }
 
 char *prompt_line(void)
@@ -177,8 +181,6 @@ char *read_command(void)
 
     // if this is scripting mode
     } else {
-        char *line = NULL;
-        size_t line_sz = 0;
         ssize_t read_sz = getline(&line, &line_sz, stdin);
 
         if (read_sz == -1) {
