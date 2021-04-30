@@ -1,5 +1,3 @@
-# Project 2: Command Line Shell
-
 See: https://www.cs.usfca.edu/~mmalensek/cs521/assignments/project-2.html
 
 ## What this program do?
@@ -15,28 +13,13 @@ There are three main parts on this project. Implementing ui.c, history.c and she
 - User name and host name: ```(username)@(hostname)``` followed by ```:```
 - The current working directory
 - Process exit status
-
-<<<<<<< HEAD
 More importantly, it also check whether the shell is in scripting mode or normal mode and get the commands from the user. The main built in C library functions to implement this are: ```readline, getline``` and ```isatty```.
-=======
-More importantly, it also check whether the shell is in scripting mode or normal mode and get the commands from the user. The main built in C library functions to implement this are: ```readline, getline``` and ```isatty```. 
->>>>>>> 6f0c6c818506268c712c1eda1259d04abc5777a8
-
 The second part of the implementation is ```history.c```. This file handles all the functions to store and get the commands from the history. This file is basically a wrapper to a circular array data structure that we are implementing in clist.c file.
-
 The last part and also the driver of this program is the ```shell.c``` file. The biggest part of this program is tokenizing and checking whether the user input contains any executable commands, handling signals and I/O redirection. List of the main functions we use here are: ```execvp, getlogin, gethostname, getpwuid, getcwd, chdir, SIGCHLD, fork()``` and ```waitpid()```.
-
-
 ## Program options
-
 | Commands  | Descriptions                              |
-<<<<<<< HEAD
 | --------- | ----------------------------------------- |
 | cd        | To change the current working directory   |
-=======
-| --------- | ----------------------------------------- | 
-| cd        | To change the current working directory   | 
->>>>>>> 6f0c6c818506268c712c1eda1259d04abc5777a8
 | #         | Comment out the shell command             |
 | history   | Listing the top 100 commands history      |
 | !num      | Get history based on the index number     |
@@ -48,22 +31,13 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 | >         | Writing/rewrite the output to a new file or existing file|
 | >>        | Appending the output to an existing file  |
 | &         | Running a command in the background       |
-
-
 ## List of files
-
-<<<<<<< HEAD
 * <b>shell.c :</b>  This is the main driver of the program. It is calling the ui.c and history.c repeatedly to get, tokenize and execute commands from the user.
 * <b>ui.c :</b> This file is mainly responsible for the user interface of the shell.
-=======
-* <b>shell.c :</b>  This is the main driver of the program. It is calling the ui.c and history.c repeatedly to get, tokenize and execute commands from the user. 
-* <b>ui.c :</b> This file is mainly responsible for the user interface of the shell. 
->>>>>>> 6f0c6c818506268c712c1eda1259d04abc5777a8
 * <b>history.c :</b> Main function of this file is to store and get command history.
 * <b>elist.c :</b> A file that implements dynamic array similar to ArrayList in Java.
 * <b>elist.c :</b> This file implements circular array data structure to store the commands from the user
 * <b>Makefile</b>: Run and compile the program
-
 ## Unit testing
 <b>List of tests:</b>
 1.  Command Execution - Test whether our program is able to wait and prompt for user input
@@ -84,9 +58,7 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 16.  Documentation - Test whether each files has proper documentation explaining their functionality
 17.  Static Analysis - Check if there are any redundant in our code
 18.  Leak Check - Check if this program has memory leak
-
 <b>Syntax used to test:</b>
-
 - ```make test``` - To test the whole tests
 - ```make test run=x``` - To test specific case of x, where x is the test number
 - ```make test run={x, y, ..., z}``` - To test few specific cases where {x, y, ...., z} is the test number
