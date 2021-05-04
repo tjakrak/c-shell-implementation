@@ -54,7 +54,7 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 12.  History !prefix - Test the program to print the command from the history based on the prefix
 13.  History !! - Test the program to print the last executed command
 14.  Background Jobs - Test the shell to be able to execute commands in the background
-15.  Job List - Test whether our pr
+15.  Job List - Testing whether our program able to show the list of the jobs running in the background
 16.  Documentation - Test whether each files has proper documentation explaining their functionality
 17.  Static Analysis - Check if there are any redundant in our code
 18.  Leak Check - Check if this program has memory leak
