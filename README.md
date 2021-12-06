@@ -37,7 +37,7 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 * <b>elist.c :</b> A file that implements dynamic array similar to ArrayList in Java.
 * <b>elist.c :</b> This file implements circular array data structure to store the commands from the user
 * <b>Makefile</b>: Run and compile the program
-* 
+ 
 ## Unit testing
 <b>List of tests:</b>
 1.  Command Execution - Test whether our program is able to wait and prompt for user input
