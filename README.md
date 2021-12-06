@@ -1,9 +1,7 @@
-See: https://www.cs.usfca.edu/~mmalensek/cs521/assignments/project-2.html
+# Implementing Shell in C
 
 ## What this program do?
 This program act as command line interface, creating a mini shell. This program supports all commands that can be executed using <i>execvp</i> and some other basic commands such as: cd, history, !num, !prefix, !!, exit, jobs, & and I/O redirection (<, >, >>).
-
-
 
 ## Implementation
 There are three main parts on this project. Implementing ui.c, history.c and shell.c.
@@ -31,6 +29,7 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 | >         | Writing/rewrite the output to a new file or existing file|
 | >>        | Appending the output to an existing file  |
 | &         | Running a command in the background       |
+
 ## List of files
 * <b>shell.c :</b>  This is the main driver of the program. It is calling the ui.c and history.c repeatedly to get, tokenize and execute commands from the user.
 * <b>ui.c :</b> This file is mainly responsible for the user interface of the shell.
@@ -38,6 +37,7 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 * <b>elist.c :</b> A file that implements dynamic array similar to ArrayList in Java.
 * <b>elist.c :</b> This file implements circular array data structure to store the commands from the user
 * <b>Makefile</b>: Run and compile the program
+* 
 ## Unit testing
 <b>List of tests:</b>
 1.  Command Execution - Test whether our program is able to wait and prompt for user input
@@ -62,3 +62,5 @@ The last part and also the driver of this program is the ```shell.c``` file. The
 - ```make test``` - To test the whole tests
 - ```make test run=x``` - To test specific case of x, where x is the test number
 - ```make test run={x, y, ..., z}``` - To test few specific cases where {x, y, ...., z} is the test number
+
+link: https://www.cs.usfca.edu/~mmalensek/cs521/assignments/project-2.html
